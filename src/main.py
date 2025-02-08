@@ -1,6 +1,8 @@
 import pygame
 import sys
 
+from player import Player  # or put Player class in the same file if you prefer
+
 def main():
     pygame.init()
 
@@ -12,26 +14,29 @@ def main():
     # Clock to cap FPS
     clock = pygame.time.Clock()
 
-    # Example player (a simple rectangle)
-    player_rect = pygame.Rect(100, 100, 50, 50)
+    # Create a player instance
+    # Let's say the 'floor' is near the bottom of the screen: floor_y = 550
+    floor_y = 550
+    player = Player(x=100, y=100, width=50, height=50)
 
     # Main game loop
     running = True
     while running:
-        # Event handling
+        # --- Event Handling ---
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+        
+        # --- Input ---
+        player.handle_input()
 
-        # Update game state (if any)
+        # --- Physics Updates ---
+        player.apply_gravity()
+        player.update(floor_y)  # Check for collision with the floor
 
-        # Clear screen with a background color
-        screen.fill((30, 30, 60))
-
-        # Draw the player
-        pygame.draw.rect(screen, (200, 50, 50), player_rect)
-
-        # Refresh the display
+        # --- Draw ---
+        screen.fill((30, 30, 60))           # background color
+        player.draw(screen)
         pygame.display.flip()
 
         # Cap the frame rate at 60 FPS
