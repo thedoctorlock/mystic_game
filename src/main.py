@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from player import Player  # or put Player class in the same file if you prefer
+from player import Player
 
 def main():
     pygame.init()
@@ -14,9 +14,15 @@ def main():
     # Clock to cap FPS
     clock = pygame.time.Clock()
 
+    # Platforms: hardcoded Rects for now (x, y, width, height)
+    # The first rect is effectively your "ground."
+    platforms = [
+        pygame.Rect(0, 550, 800, 50),      # ground
+        pygame.Rect(300, 400, 100, 20),    # floating platform
+        # Add more as you wish
+    ]
+
     # Create a player instance
-    # Let's say the 'floor' is near the bottom of the screen: floor_y = 550
-    floor_y = 550
     player = Player(x=100, y=100, width=50, height=50)
 
     # Main game loop
@@ -30,16 +36,22 @@ def main():
         # --- Input ---
         player.handle_input()
 
-        # --- Physics Updates ---
+        # --- Physics & Collision Updates ---
+        # Pass in the platforms list so the player can check collisions
         player.apply_gravity()
-        player.update(floor_y)  # Check for collision with the floor
+        player.update(platforms)
 
         # --- Draw ---
-        screen.fill((30, 30, 60))           # background color
-        player.draw(screen)
-        pygame.display.flip()
+        screen.fill((30, 30, 60))  # background color
+       
+        # Draw each platform (gray)
+        for pf in platforms:
+            pygame.draw.rect(screen, (100, 100, 100), pf)
 
-        # Cap the frame rate at 60 FPS
+        # Draw the player
+        player.draw(screen)
+
+        pygame.display.flip()
         clock.tick(60)
 
     pygame.quit()
